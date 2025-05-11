@@ -1,22 +1,43 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Current Rosters</h2>
-{# NOTE: datasheets are served from the root-level "datasheets/" folder via serve_datasheet() #}
-{% for side in ['team1','team2'] %}
-  <h3>{{ state[side].name }}</h3>
-  <ul>
-  {% for path in state[side].roster %}
-    {% set label = path.split('/',1)[1][:-5] %}
-    <li>
-      <a href="{{ url_for('serve_datasheet', filename=path) }}" target="_blank">
-        {{ label }}
-      </a>
-      <span class="remove" onclick="(async()=>{
-        await postJSON('/remove',{team:'{{side}}',path:'{{path}}'});
-        location.reload();
-      })()">×</span>
-    </li>
-  {% endfor %}
-  </ul>
-{% endfor %}
+  <h2>Current Rosters</h2>
+  <div class="flex">
+    <!-- Team 1 -->
+    <div style="flex:1; border:1px solid #ccc; padding:1em; border-radius:8px; margin:0.5em;">
+      <h3>{{ state.team1.name }}</h3>
+      <ul>
+        {% for path in state.team1.roster %}
+          {% set unit_label = path.split('/',1)[1][:-5] %}
+          <li>
+            <a href="{{ url_for('serve_datasheet', filename=path) }}" target="_blank">
+              {{ unit_label }}
+            </a>
+            <span class="remove" onclick="(async()=>{
+              await postJSON('/remove',{team:'team1',path:'{{path}}'});
+              this.parentElement.remove();
+            })()">×</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Team 2 -->
+    <div style="flex:1; border:1px solid #ccc; padding:1em; border-radius:8px; margin:0.5em;">
+      <h3>{{ state.team2.name }}</h3>
+      <ul>
+        {% for path in state.team2.roster %}
+          {% set unit_label = path.split('/',1)[1][:-5] %}
+          <li>
+            <a href="{{ url_for('serve_datasheet', filename=path) }}" target="_blank">
+              {{ unit_label }}
+            </a>
+            <span class="remove" onclick="(async()=>{
+              await postJSON('/remove',{team:'team2',path:'{{path}}'});
+              this.parentElement.remove();
+            })()">×</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
 {% endblock %}
