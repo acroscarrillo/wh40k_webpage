@@ -1,15 +1,27 @@
 {% extends 'base.html' %}
 {% block content %}
   <h2>Setup Armies</h2>
-  <form method="post">
-    <label>Team 1 name:
+
+  <!-- Team name form now includes Reset Rosters on the same row -->
+  <form method="post" style="display: flex; align-items: center; gap: 1em; margin-bottom: 1.5em; width: 100%;">
+    <label>
+      Team 1 name:
       <input name="team1_name" value="{{ team1.name }}">
     </label>
-    &nbsp;
-    <label>Team 2 name:
+    <label>
+      Team 2 name:
       <input name="team2_name" value="{{ team2.name }}">
     </label>
     <button type="submit">Save Names</button>
+
+    <!-- Reset Rosters button pushed to far right -->
+    <button
+      type="button"
+      id="reset_rosters_btn"
+      style="margin-left:auto; background:#c33; color:white;"
+    >
+      Reset Rosters
+    </button>
   </form>
 
   <div class="flex">
@@ -17,7 +29,6 @@
       <div style="flex:1; border:1px solid #ccc; padding:1em; border-radius:8px; margin:0.5em;">
         <h3>{{ state[side].name }}</h3>
 
-        <!-- Faction selector -->
         <div>
           <label>Faction:</label><br>
           <select id="{{ side }}_faction">
@@ -28,7 +39,6 @@
           </select>
         </div>
 
-        <!-- Unit selector (no longer shows faction prefix) -->
         <div>
           <label>Unit:</label><br>
           <select id="{{ side }}_unit" disabled>
@@ -68,13 +78,10 @@
               addBtn.disabled = true;
               return;
             }
-            // populate unit dropdown WITHOUT faction prefix
             dsByFaction[fac].forEach(u => {
               const opt = document.createElement('option');
               opt.value = u.path;
-              // derive unit name from filename
-              const filename = u.path.split('/')[1];
-              opt.textContent = filename.slice(0, -5);
+              opt.textContent = u.path.split('/')[1].slice(0,-5);
               unitSel.appendChild(opt);
             });
             unitSel.disabled = false;
@@ -87,14 +94,10 @@
 
           addBtn.addEventListener('click', async e => {
             e.preventDefault();
-            const path     = unitSel.value;
-            const filename = path.split('/')[1];
-            const label    = filename.slice(0, -5);
+            const path  = unitSel.value;
+            const label = unitSel.options[unitSel.selectedIndex].text;
             if (!path) return;
-
             await postJSON('/add', { team: '{{ side }}', path });
-
-            // add to roster list with a delete ×
             const li = document.createElement('li');
             li.textContent = label;
             const span = document.createElement('span');
@@ -106,15 +109,22 @@
             };
             li.appendChild(span);
             rosterUL.appendChild(li);
-
-            // reset only the unit selector
             unitSel.selectedIndex = 0;
-            addBtn.disabled      = true;
-            // leave unitSel enabled so you can pick another unit
+            addBtn.disabled = true;
           });
         })();
         </script>
       </div>
     {% endfor %}
   </div>
+
+  <!-- Reset Rosters Script -->
+  <script>
+    document.getElementById('reset_rosters_btn').addEventListener('click', async () => {
+      if (confirm('Are you sure you want to reset all rosters?')) {
+        await postJSON('/reset_rosters', {});
+        location.reload();
+      }
+    });
+  </script>
 {% endblock %}

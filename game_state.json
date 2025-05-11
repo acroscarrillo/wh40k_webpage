@@ -1,44 +1,28 @@
 {
   "team1": {
-    "name": "A",
+    "name": "Imperio",
     "roster": [
-      "adepta-sororitas/Battle-Sanctum.html",
-      "adepta-sororitas/Arco-flagellants.html",
-      "necrons/Canoptek-Wraiths.html",
-      "astra-militarum/Cadian-Castellan.html",
-      "imperial-agents/Damned-Legionnaires.html",
-      "tyranids/Tyranid-Warriors-With-Melee-Bio-weapons.html",
-      "grey-knights/Interceptor-Squad.html",
-      "chaos-daemons/Contorted-Epitome.html",
-      "necrons/Catacomb-Command-Barge.html",
-      "adepta-sororitas/Celestian-Sacresants.html",
-      "adepta-sororitas/Castigator.html"
+      "imperial-knights/Canis-Rex.html",
+      "space-marines/Lion-El-jonson.html"
     ]
   },
   "team2": {
-    "name": "B",
+    "name": "Herejes",
     "roster": [
-      "astra-militarum/Arvus-Lighter.html",
-      "imperial-agents/Damned-Legionnaires.html",
-      "astra-militarum/Atlas-Recovery-Vehicle.html",
-      "astra-militarum/Catachan-Command-Squad.html",
-      "astra-militarum/Death-Korps-Grenadier-Squad.html",
-      "astra-militarum/Avenger-Strike-Fighter.html",
-      "adepta-sororitas/Battle-Sisters-Squad.html",
-      "adeptus-custodes/Aquilon-Custodians.html"
+      "necrons/Skorpekh-Destroyers.html"
     ]
   },
   "points": {
     "1": [
-      1,
-      0
+      3,
+      2
     ],
     "2": [
-      1,
+      0,
       2
     ],
     "3": [
-      3,
+      0,
       0
     ],
     "4": [
