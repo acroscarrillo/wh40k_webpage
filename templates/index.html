@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>Setup Armies</h2>
+
+  <!-- Team name form -->
+  <form method="post">
+    <label>Team 1 name:
+      <input name="team1_name" value="{{ team1.name }}">
+    </label>
+    &nbsp;
+    <label>Team 2 name:
+      <input name="team2_name" value="{{ team2.name }}">
+    </label>
+    <button type="submit">Save Names</button>
+  </form>
+
+  <div class="flex">
+    {# Loop over team1 and team2 #}
+    {% for side in ['team1','team2'] %}
+      <div style="flex:1; border:1px solid #ccc; padding:1em; border-radius:8px;">
+        <h3>{{ state[side].name }}</h3>
+
+        <!-- Faction selector -->
+        <div>
+          <label>Faction:</label><br>
+          <select id="{{ side }}_faction">
+            <option value="" disabled selected>-- choose faction --</option>
+            {% for faction in ds_by_faction.keys() %}
+              <option value="{{ faction }}">{{ faction.replace('-', ' ').title() }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Unit selector -->
+        <div>
+          <label>Unit:</label><br>
+          <select id="{{ side }}_unit" disabled>
+            <option value="" disabled selected>-- choose unit --</option>
+          </select>
+        </div>
+
+        <!-- Add button -->
+        <button id="{{ side }}_add" disabled>Add to {{ state[side].name }}</button>
+
+        <!-- Current roster -->
+        <h4>Roster</h4>
+        <ul id="{{ side }}_roster_list">
+          {% for path in state[side].roster %}
+            {% set label = path.split('/',1)[1][:-5] %}
+            <li>{{ label }}</li>
+          {% endfor %}
+        </ul>
+
+        <!-- 
+          We serve raw datasheet HTML from /datasheets/<faction>/<file>.html 
+          via the Flask route serve_datasheet(). 
+        -->
+        <script>
+          (function(){
+            // JSON map: faction -> [ {label,path}, … ]
+            const dsByFaction = {{ ds_by_faction|tojson }};
+            const factionSel  = document.getElementById('{{ side }}_faction');
+            const unitSel     = document.getElementById('{{ side }}_unit');
+            const addBtn      = document.getElementById('{{ side }}_add');
+            const rosterUL    = document.getElementById('{{ side }}_roster_list');
+
+            // Populate units when a faction is chosen
+            factionSel.addEventListener('change', () => {
+              const fac = factionSel.value;
+              unitSel.innerHTML = '<option value="" disabled selected>-- choose unit --</option>';
+              if (!fac || !dsByFaction[fac]) {
+                unitSel.disabled = true;
+                addBtn.disabled = true;
+                return;
+              }
+              dsByFaction[fac].forEach(u => {
+                const opt = document.createElement('option');
+                opt.value = u.path;
+                opt.textContent = u.label;
+                unitSel.appendChild(opt);
+              });
+              unitSel.disabled = false;
+              addBtn.disabled = true; // wait until unit picked
+            });
+
+            // Enable Add button when a unit is selected
+            unitSel.addEventListener('change', () => {
+              addBtn.disabled = !unitSel.value;
+            });
+
+            // Add the selected unit to the roster
+            addBtn.addEventListener('click', async e => {
+              e.preventDefault();
+              const path  = unitSel.value;
+              const label = unitSel.options[unitSel.selectedIndex].text;
+              if (!path) return;
+
+              // POST to /add with team name and datasheet path
+              await postJSON('/add', { team: '{{ side }}', path });
+
+              // Update roster list in-place
+              const li = document.createElement('li');
+              li.textContent = label;
+              rosterUL.appendChild(li);
+
+              // Reset only the unit dropdown, keep faction selected
+              unitSel.selectedIndex = 0;
+              addBtn.disabled = true;
+              // leave unitSel enabled so you can pick another unit
+            });
+          })();
+        </script>
+
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

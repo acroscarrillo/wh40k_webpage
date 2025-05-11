@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Current Rosters</h2>
+{# NOTE: datasheets are served from the root-level "datasheets/" folder via serve_datasheet() #}
+{% for side in ['team1','team2'] %}
+  <h3>{{ state[side].name }}</h3>
+  <ul>
+  {% for path in state[side].roster %}
+    {% set label = path.split('/',1)[1][:-5] %}
+    <li>
+      <a href="{{ url_for('serve_datasheet', filename=path) }}" target="_blank">
+        {{ label }}
+      </a>
+      <span class="remove" onclick="(async()=>{
+        await postJSON('/remove',{team:'{{side}}',path:'{{path}}'});
+        location.reload();
+      })()">×</span>
+    </li>
+  {% endfor %}
+  </ul>
+{% endfor %}
+{% endblock %}

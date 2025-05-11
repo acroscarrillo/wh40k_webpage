@@ -1,0 +1,55 @@
+{
+  "team1": {
+    "name": "A",
+    "roster": [
+      "adepta-sororitas/Battle-Sanctum.html",
+      "adepta-sororitas/Arco-flagellants.html",
+      "necrons/index.html",
+      "necrons/Canoptek-Wraiths.html",
+      "astra-militarum/Cadian-Castellan.html",
+      "imperial-agents/Damned-Legionnaires.html",
+      "astra-militarum/Catachan-Heavy-Weapons-Squad.html",
+      "tyranids/Tyranid-Warriors-With-Melee-Bio-weapons.html",
+      "grey-knights/Interceptor-Squad.html",
+      "chaos-daemons/Contorted-Epitome.html",
+      "necrons/Catacomb-Command-Barge.html",
+      "adepta-sororitas/Celestian-Sacresants.html",
+      "adepta-sororitas/Castigator.html"
+    ]
+  },
+  "team2": {
+    "name": "B",
+    "roster": [
+      "astra-militarum/Arvus-Lighter.html",
+      "imperial-agents/Damned-Legionnaires.html",
+      "astra-militarum/Atlas-Recovery-Vehicle.html",
+      "astra-militarum/Catachan-Command-Squad.html",
+      "astra-militarum/Death-Korps-Grenadier-Squad.html",
+      "astra-militarum/Avenger-Strike-Fighter.html",
+      "adepta-sororitas/Battle-Sisters-Squad.html",
+      "adeptus-custodes/Aquilon-Custodians.html"
+    ]
+  },
+  "points": {
+    "1": [
+      1,
+      0
+    ],
+    "2": [
+      1,
+      2
+    ],
+    "3": [
+      3,
+      0
+    ],
+    "4": [
+      0,
+      0
+    ],
+    "5": [
+      0,
+      0
+    ]
+  }
+}
