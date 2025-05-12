@@ -43,9 +43,10 @@
       background: #2a2a2a;
     }
     nav button.active {
-      background: #333;
-      font-weight: bold;
-    }
+  background: #19bc47;    /* your new highlight color */
+  color: #fff;            /* text color when active */
+  font-weight: bold;
+}
 
     /* Headings */
     h1, h2 {
@@ -156,7 +157,22 @@ nav {
     min-width: 90px;
   }
 }
-
+/* unvisited links */
+a:link {
+  color: #11a36b;        /* bright orange */
+  text-decoration: none;
+}
+/* visited links */
+a:visited {
+  color: #11a36b;        /* medium gray */
+  text-decoration: none;
+}
+/* hover & active states */
+a:hover,
+a:active {
+  color: #ffff66;        /* pastel yellow */
+  text-decoration: underline;
+}
   </style>
 
   <script>
