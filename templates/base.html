@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>{{ title or "Warhammer Roster" }}</title>
+  <link rel="icon" 
+      type="image/x-icon" 
+      href="{{ url_for('static', filename='favicon.ico') }}">
+  <title>{{ title or "Alexpedia 40k" }}</title>
   <style>
     /* Dark theme base */
     body {

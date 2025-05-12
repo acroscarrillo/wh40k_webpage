@@ -3,7 +3,10 @@
     "name": "Imperio",
     "roster": [
       "imperial-knights/Canis-Rex.html",
-      "space-marines/Lion-El-jonson.html"
+      "space-marines/Lion-El-jonson.html",
+      "adepta-sororitas/Battle-Sisters-Squad.html",
+      "imperial-agents/Fortis-Kill-Team.html",
+      "thousand-sons/Magnus-The-Red.html"
     ]
   },
   "team2": {
