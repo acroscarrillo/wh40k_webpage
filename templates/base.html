@@ -48,12 +48,14 @@
     h1, h2 {
       font-size: 2em;
       margin-bottom: 0.5em;
+      text-align: center; 
     }
     h3 {
-      font-size: 1.5em;
-      margin-top: 1em;
-      margin-bottom: 0.3em;
-    }
+  font-size: 1.5em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  text-align: center;
+}
 
     /* Forms, inputs, selects, buttons */
     input, select, button {
@@ -176,23 +178,23 @@ nav {
   {% block head %}{% endblock %}
 </head>
 <body>
-  <nav>
-    <button type="button"
-            data-href="{{ url_for('index') }}"
-            onclick="location.href='{{ url_for('index') }}'">
-      Landing
-    </button>
-    <button type="button"
-            data-href="{{ url_for('roster') }}"
-            onclick="location.href='{{ url_for('roster') }}'">
-      Roster
-    </button>
-    <button type="button"
-            data-href="{{ url_for('points') }}"
-            onclick="location.href='{{ url_for('points') }}'">
-      Points
-    </button>
-  </nav>
+    <nav>
+        <button type="button"
+                data-href="{{ url_for('index') }}"
+                onclick="location.href='{{ url_for('index') }}'">
+          Setup ⚙️
+        </button>
+        <button type="button"
+                data-href="{{ url_for('roster') }}"
+                onclick="location.href='{{ url_for('roster') }}'">
+          Datasheets 📝
+        </button>
+        <button type="button"
+                data-href="{{ url_for('points') }}"
+                onclick="location.href='{{ url_for('points') }}'">
+          Points Tracker 🎯
+        </button>
+      </nav>
 
   <hr>
   {% block content %}{% endblock %}

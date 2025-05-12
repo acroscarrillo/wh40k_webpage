@@ -3,46 +3,54 @@
 <h2>Track Points</h2>
 
 <form method="post" id="points_form">
-  <!-- Reset button at the top -->
-  <button type="button" id="reset_btn">Reset all points</button>
+  <div class="table-responsive">
+    <table>
+      <tr>
+        <th>Round</th>
+        <th>{{ team1.name }}</th>
+        <th>{{ team2.name }}</th>
+      </tr>
 
-  <table>
-    <tr>
-      <th>Round</th>
-      <th>{{ team1.name }}</th>
-      <th>{{ team2.name }}</th>
-    </tr>
+      {% set ns = namespace(total1=0, total2=0) %}
+      {% for r in range(1, 6) %}
+        {% set score1 = points[r|string][0] %}
+        {% set score2 = points[r|string][1] %}
 
-    {% set ns = namespace(total1=0, total2=0) %}
-    {% for r in range(1, 6) %}
-      {% set score1 = points[r|string][0] %}
-      {% set score2 = points[r|string][1] %}
-      {% set ns.total1 = ns.total1 + score1 %}
-      {% set ns.total2 = ns.total2 + score2 %}
+        {% set ns.total1 = ns.total1 + score1 %}
+        {% set ns.total2 = ns.total2 + score2 %}
+
+        <tr>
+          <td>{{ r }}</td>
+          <td><input type="number" name="p1_{{ r }}" value="{{ score1 }}"></td>
+          <td><input type="number" name="p2_{{ r }}" value="{{ score2 }}"></td>
+        </tr>
+      {% endfor %}
 
       <tr>
-        <td>{{ r }}</td>
-        <td><input type="number" name="p1_{{ r }}" value="{{ score1 }}"></td>
-        <td><input type="number" name="p2_{{ r }}" value="{{ score2 }}"></td>
+        <th>Total</th>
+        <td>{{ ns.total1 }}</td>
+        <td>{{ ns.total2 }}</td>
       </tr>
-    {% endfor %}
+    </table>
+  </div>
 
-    <tr>
-      <th>Total</th>
-      <td>{{ ns.total1 }}</td>
-      <td>{{ ns.total2 }}</td>
-    </tr>
-  </table>
-
-  <button type="submit">Save Points</button>
+  <!-- Buttons row: Save on left, Reset on right -->
+  <div style="display: flex; align-items: center; margin-top: 1em;">
+    <button type="submit">Save Points</button>
+    <button
+      type="button"
+      id="reset_btn"
+      style="margin-left: auto; background: #c33; color: #fff;"
+    >
+      Reset all points
+    </button>
+  </div>
 </form>
 
 <script>
-  // attach confirmation+reset logic
   document.getElementById('reset_btn').addEventListener('click', () => {
     if (confirm('Are you sure you want to reset all points?')) {
       const form = document.getElementById('points_form');
-      // inject a hidden 'reset' field so the server knows to zero scores
       const inp = document.createElement('input');
       inp.type = 'hidden';
       inp.name = 'reset';
