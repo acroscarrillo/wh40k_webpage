@@ -1,63 +1,74 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Track Points</h2>
-
-<form method="post" id="points_form">
+  <h2>Track Points</h2>
   <div class="table-responsive">
     <table>
       <tr>
         <th>Round</th>
-        <th>{{ team1.name }}</th>
-        <th>{{ team2.name }}</th>
+        <th id="team1_name_th">Team 1</th>
+        <th id="team2_name_th">Team 2</th>
       </tr>
-
-      {% set ns = namespace(total1=0, total2=0) %}
-      {% for r in range(1, 6) %}
-        {% set score1 = points[r|string][0] %}
-        {% set score2 = points[r|string][1] %}
-
-        {% set ns.total1 = ns.total1 + score1 %}
-        {% set ns.total2 = ns.total2 + score2 %}
-
+      {% for r in range(1,6) %}
         <tr>
-          <td>{{ r }}</td>
-          <td><input type="number" name="p1_{{ r }}" value="{{ score1 }}"></td>
-          <td><input type="number" name="p2_{{ r }}" value="{{ score2 }}"></td>
+          <td>{{r}}</td>
+          <td><input id="p1_{{r}}" type="number"></td>
+          <td><input id="p2_{{r}}" type="number"></td>
         </tr>
       {% endfor %}
-
       <tr>
         <th>Total</th>
-        <td>{{ ns.total1 }}</td>
-        <td>{{ ns.total2 }}</td>
+        <td id="total1">0</td>
+        <td id="total2">0</td>
       </tr>
     </table>
   </div>
-
-  <!-- Buttons row: Save on left, Reset on right -->
-  <div style="display: flex; align-items: center; margin-top: 1em;">
-    <button type="submit">Save Points</button>
-    <button
-      type="button"
-      id="reset_btn"
-      style="margin-left: auto; background: #c33; color: #fff;"
-    >
+  <div style="display:flex;align-items:center;margin-top:1em;">
+    <button id="save_points">Save Points</button>
+    <button id="reset_points" style="margin-left:auto;background:#c33;color:white;">
       Reset all points
     </button>
   </div>
-</form>
 
-<script>
-  document.getElementById('reset_btn').addEventListener('click', () => {
-    if (confirm('Are you sure you want to reset all points?')) {
-      const form = document.getElementById('points_form');
-      const inp = document.createElement('input');
-      inp.type = 'hidden';
-      inp.name = 'reset';
-      inp.value = 'yes';
-      form.appendChild(inp);
-      form.submit();
-    }
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const KEY = 'wh40k_state';
+    let st = JSON.parse(localStorage.getItem(KEY)||'{}');
+    const defaults = {team1:{name:'Imperio'},team2:{name:'Herejes'},points:{'1':[0,0],'2':[0,0],'3':[0,0],'4':[0,0],'5':[0,0]}};
+    st = Object.assign({}, defaults, st);
+
+    const render = () => {
+      document.getElementById('team1_name_th').textContent = st.team1.name;
+      document.getElementById('team2_name_th').textContent = st.team2.name;
+      let t1=0,t2=0;
+      for(let r=1;r<=5;r++){
+        const i1=document.getElementById(`p1_${r}`),
+              i2=document.getElementById(`p2_${r}`),
+              [v1,v2]=st.points[r]||[0,0];
+        i1.value=v1; i2.value=v2;
+        t1+=Number(v1); t2+=Number(v2);
+      }
+      document.getElementById('total1').textContent=t1;
+      document.getElementById('total2').textContent=t2;
+    };
+
+    document.getElementById('save_points').onclick = () => {
+      for(let r=1;r<=5;r++){
+        st.points[r]=[
+          Number(document.getElementById(`p1_${r}`).value)||0,
+          Number(document.getElementById(`p2_${r}`).value)||0
+        ];
+      }
+      localStorage.setItem(KEY,JSON.stringify(st));
+      render();
+    };
+    document.getElementById('reset_points').onclick = () => {
+      if(!confirm('Reset all points?')) return;
+      for(let r=1;r<=5;r++) st.points[r]=[0,0];
+      localStorage.setItem(KEY,JSON.stringify(st));
+      render();
+    };
+
+    render();
   });
-</script>
+  </script>
 {% endblock %}

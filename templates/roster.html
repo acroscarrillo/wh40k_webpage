@@ -2,42 +2,65 @@
 {% block content %}
   <h2>Current Units</h2>
   <div class="flex">
-    <!-- Team 1 -->
+    <!-- Team 1 Column -->
     <div style="flex:1; border:1px solid #ccc; padding:1em; border-radius:8px; margin:0.5em;">
-      <h3>{{ state.team1.name }}</h3>
-      <ul>
-        {% for path in state.team1.roster %}
-          {% set unit_label = path.split('/',1)[1][:-5] %}
-          <li>
-            <a href="{{ url_for('serve_datasheet', filename=path) }}" target="_blank">
-              {{ unit_label }}
-            </a>
-            <span class="remove" onclick="(async()=>{
-              await postJSON('/remove',{team:'team1',path:'{{path}}'});
-              this.parentElement.remove();
-            })()">×</span>
-          </li>
-        {% endfor %}
-      </ul>
+      <h3 id="team1_header"></h3>
+      <ul id="team1_roster_ul"></ul>
     </div>
 
-    <!-- Team 2 -->
+    <!-- Team 2 Column -->
     <div style="flex:1; border:1px solid #ccc; padding:1em; border-radius:8px; margin:0.5em;">
-      <h3>{{ state.team2.name }}</h3>
-      <ul>
-        {% for path in state.team2.roster %}
-          {% set unit_label = path.split('/',1)[1][:-5] %}
-          <li>
-            <a href="{{ url_for('serve_datasheet', filename=path) }}" target="_blank">
-              {{ unit_label }}
-            </a>
-            <span class="remove" onclick="(async()=>{
-              await postJSON('/remove',{team:'team2',path:'{{path}}'});
-              this.parentElement.remove();
-            })()">×</span>
-          </li>
-        {% endfor %}
-      </ul>
+      <h3 id="team2_header"></h3>
+      <ul id="team2_roster_ul"></ul>
     </div>
   </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const STORAGE_KEY = 'wh40k_state';
+    // Load existing state or use defaults
+    let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    state.team1 = state.team1 || { name: 'Imperio', roster: [] };
+    state.team2 = state.team2 || { name: 'Herejes', roster: [] };
+
+    // Prefix for datasheet URLs
+    const dsPrefix = "{{ url_for('serve_datasheet', filename='') }}";
+
+    function renderRoster() {
+      ['team1','team2'].forEach(side => {
+        // Header
+        document.getElementById(side + '_header').textContent = state[side].name;
+        // Roster list
+        const ul = document.getElementById(side + '_roster_ul');
+        ul.innerHTML = '';
+        state[side].roster.forEach(path => {
+          const label = path.split('/',2)[1].replace('.html','');
+          const li = document.createElement('li');
+
+          // Link out to datasheet
+          const a = document.createElement('a');
+          a.href = dsPrefix + path;
+          a.target = '_blank';
+          a.textContent = label;
+          li.appendChild(a);
+
+          // Remove ×
+          const span = document.createElement('span');
+          span.textContent = ' ×';
+          span.className = 'remove';
+          span.onclick = () => {
+            state[side].roster = state[side].roster.filter(p => p !== path);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            renderRoster();
+          };
+          li.appendChild(span);
+
+          ul.appendChild(li);
+        });
+      });
+    }
+
+    renderRoster();
+  });
+  </script>
 {% endblock %}
